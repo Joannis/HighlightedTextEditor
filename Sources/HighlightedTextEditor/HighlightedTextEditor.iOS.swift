@@ -48,14 +48,20 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         let cursor = uiView.selectedRange
         defer {
             if uiView.attributedText.length <= cursor.upperBound {
-                uiView.selectedRange = cursor
+                // Attributedtext is updating the position the next tick
+                // Therefore, so are we
+                DispatchQueue.main.async {
+                    uiView.selectedRange = cursor
+                }
             }
         }
         
         let highlightedText = HighlightedTextEditor.getHighlightedText(text: text, highlightRules: highlightRules)
 
         uiView.attributedText = highlightedText
-        uiView.isScrollEnabled = true
+        DispatchQueue.main.async {
+            uiView.isScrollEnabled = true
+        }
     }
 
     public class Coordinator: NSObject, UITextViewDelegate {
@@ -63,6 +69,10 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
 
         init(_ markdownEditorView: HighlightedTextEditor) {
             self.parent = markdownEditorView
+        }
+        
+        public func textViewDidChangeSelection(_ textView: UITextView) {
+            
         }
         
         public func textViewDidChange(_ textView: UITextView) {
