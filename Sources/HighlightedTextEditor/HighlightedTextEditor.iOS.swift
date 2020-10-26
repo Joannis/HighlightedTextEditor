@@ -46,7 +46,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         uiView.isScrollEnabled = false
         
         let cursor = uiView.selectedRange
-        if uiView.attributedText.length <= cursor.upperBound {
+        if cursor.upperBound <= uiView.attributedText.length {
             context.coordinator.updating = cursor
             // Attributedtext is updating the position the next tick
             // Therefore, so are we
