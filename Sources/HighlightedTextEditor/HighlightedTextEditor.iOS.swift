@@ -11,6 +11,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
     }
     let highlightRules: [HighlightRule]
     
+    var autofocus = false
     var onEditingChanged: () -> Void       = {}
     var onCommit        : () -> Void       = {}
     var onTextChange    : (String) -> Void = { _ in }
@@ -33,6 +34,12 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         Coordinator(self)
     }
     
+    public func autofocus(_ autofocus: Bool = false) -> Self {
+        var copy = self
+        copy.autofocus = autofocus
+        return copy
+    }
+    
     public func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         textView.delegate = context.coordinator
@@ -43,6 +50,11 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
     }
 
     public func updateUIView(_ uiView: UITextView, context: Context) {
+        if context.coordinator.autofocus {
+            uiView.becomeFirstResponder()
+            context.coordinator.autofocus = false
+        }
+        
         uiView.isScrollEnabled = false
         
         let cursor = uiView.selectedRange
@@ -67,9 +79,11 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
     public class Coordinator: NSObject, UITextViewDelegate {
         var parent: HighlightedTextEditor
         var updating: NSRange?
+        var autofocus: Bool
 
         init(_ markdownEditorView: HighlightedTextEditor) {
             self.parent = markdownEditorView
+            self.autofocus = markdownEditorView.autofocus
         }
         
         public func textViewDidChangeSelection(_ textView: UITextView) {
