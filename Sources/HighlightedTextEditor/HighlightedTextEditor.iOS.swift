@@ -34,7 +34,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         Coordinator(self)
     }
     
-    public func autofocus(_ autofocus: Bool = false) -> Self {
+    public func autofocus(_ autofocus: Bool = true) -> Self {
         var copy = self
         copy.autofocus = autofocus
         return copy
