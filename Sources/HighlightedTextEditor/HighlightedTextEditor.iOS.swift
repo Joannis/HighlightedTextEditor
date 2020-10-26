@@ -46,15 +46,13 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         uiView.isScrollEnabled = false
         
         let cursor = uiView.selectedRange
-        context.coordinator.updating = cursor
-        defer {
-            if uiView.attributedText.length <= cursor.upperBound {
-                // Attributedtext is updating the position the next tick
-                // Therefore, so are we
-                DispatchQueue.main.async {
-                    uiView.selectedRange = cursor
-                    context.coordinator.updating = nil
-                }
+        if uiView.attributedText.length <= cursor.upperBound {
+            context.coordinator.updating = cursor
+            // Attributedtext is updating the position the next tick
+            // Therefore, so are we
+            DispatchQueue.main.async {
+                uiView.selectedRange = cursor
+                context.coordinator.updating = nil
             }
         }
         
