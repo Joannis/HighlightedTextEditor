@@ -44,7 +44,6 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         let textView = UITextView()
         textView.delegate = context.coordinator
         textView.isEditable = true
-        textView.isScrollEnabled = true
 
         return textView
     }
@@ -54,8 +53,6 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
             uiView.becomeFirstResponder()
             context.coordinator.autofocus = false
         }
-        
-        uiView.isScrollEnabled = false
         
         let cursor = uiView.selectedRange
         if cursor.upperBound <= uiView.attributedText.length {
@@ -69,11 +66,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         }
         
         let highlightedText = HighlightedTextEditor.getHighlightedText(text: text, highlightRules: highlightRules)
-
         uiView.attributedText = highlightedText
-        DispatchQueue.main.async {
-            uiView.isScrollEnabled = true
-        }
     }
 
     public class Coordinator: NSObject, UITextViewDelegate {
